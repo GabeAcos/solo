@@ -2,6 +2,8 @@ package main
 
 import(
 	"net/http"
+	"strconv"
+	"fmt"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -11,7 +13,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func userView(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("user view"))
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+	
+	fmt.Fprintf(w, "user with id: %v", id)
 }
 
 func userCreate(w http.ResponseWriter, r *http.Request) {
