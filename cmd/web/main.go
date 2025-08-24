@@ -3,15 +3,21 @@ package main
 import (
 	"net/http"
 	"flag"
+	"log"
 )
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandlerFunc("GET /{$}", home)
-	mux.HandlerFunc("GET /user/view/{id}", userView)
+	addr := flag.String("addr", ":4000", "Net Address for app")
+
+	mux.HandleFunc("GET /{$}", home)
+	mux.HandleFunc("GET /user/view/{id}", userView)
 	mux.HandleFunc("GET /user/create", userCreate)
 	mux.HandleFunc("POST /user/create", userCreatePost)
 
-	log.Printf("startig server on port: %v", addr)
+	log.Printf("startig server on port: %v", *addr)
+
+	err := http.ListenAndServe(*addr, mux)
+	log.Fatal(err)
 }
