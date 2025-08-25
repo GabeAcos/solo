@@ -1,15 +1,33 @@
 package main
 
-import(
+import (
+	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
-	"fmt"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 
-	w.Write([]byte("home page"))
+	files := []string{
+		"ui/html/base.tmpl",
+		"ui/html/pages/home.tmpl",
+		"ui/html/partials/nav.tmpl",
+		"ui/html/partials/footer.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func userView(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +36,7 @@ func userView(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	
+
 	fmt.Fprintf(w, "user with id: %v", id)
 }
 

@@ -16,7 +16,7 @@ func main() {
 	mux.HandleFunc("GET /user/create", userCreate)
 	mux.HandleFunc("POST /user/create", userCreatePost)
 
-	log.Printf("startig server on port: %v", *addr)
+	log.Printf("starting server on port: %v", *addr)
 
 	err := http.ListenAndServe(*addr, mux)
 	log.Fatal(err)
